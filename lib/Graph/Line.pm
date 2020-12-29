@@ -16,9 +16,23 @@ sub new
 
     $options = {} unless $options;
 
-    my @edges = map { { orig => $_,
-                        attr => $graph->get_edge_attributes( @$_ ) } }
-                    $graph->edges;
+    my @edges;
+    if( $graph->is_multiedged ) {
+        for my $unique_edge ($graph->unique_edges) {
+            for my $edge ($graph->get_multiedge_ids( @$unique_edge )) {
+                push @edges, {
+                        orig => $unique_edge,
+                        attr => $graph->get_edge_attributes_by_id( @$unique_edge,
+                                                                   $edge )
+                     };
+            }
+        }
+    } else {
+        @edges = map { { orig => $_,
+                         attr => $graph->get_edge_attributes( @$_ ) } }
+                     $graph->edges;
+    }
+
     my $adjacency = {};
     for my $edge (@edges) {
         push @{$adjacency->{$edge->{orig}[0]}}, $edge;

@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Graph::Line;
 use Graph::Undirected;
-use Test::More tests => 7;
+use Test::More tests => 9;
 
 my( $g, $l, @edges );
 
@@ -30,3 +30,11 @@ is( $l->edges, 3 );
 is( join( ',', sort map { $l->get_edge_attribute( @$_, 'original_vertex' ) }
                         $l->edges ),
     'A,B,C' );
+
+$g = Graph::Undirected->new( multiedged => 1 );
+$g->add_edges( [ 'A', 'A' ], [ 'A', 'A' ], [ 'A', 'A' ] );
+
+$l = Graph::Line->new( $g );
+
+is( $l->vertices, 3 );
+is( $l->edges, 6 ); # FIXME: this is weird
