@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Graph::Line;
 use Graph::Undirected;
-use Test::More tests => 5;
+use Test::More tests => 6;
 
 my( $g, $l );
 
@@ -17,6 +17,9 @@ $l = Graph::Line->new( $g );
 is( $l->vertices, 2 );
 is( $l->edges, 1 );
 is( (grep { defined $_->{color} && $_->{color} eq 'red' } $l->vertices), 1 );
+
+my @edges = $l->edges;
+is( $l->get_edge_attribute( @{$edges[0]}, 'original_vertex' ), 'B' );
 
 $l = Graph::Line->new( $g, { loop_end_vertices => 1 } );
 

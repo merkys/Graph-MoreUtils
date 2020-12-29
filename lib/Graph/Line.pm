@@ -31,8 +31,10 @@ sub new
     for my $vertex (sort keys %$adjacency) {
         for my $i (0..$#{$adjacency->{$vertex}}-1) {
             for my $j ($i+1..$#{$adjacency->{$vertex}}) {
-                $line_graph->add_edge( $adjacency->{$vertex}[$i],
-                                       $adjacency->{$vertex}[$j] );
+                $line_graph->set_edge_attribute( $adjacency->{$vertex}[$i],
+                                                 $adjacency->{$vertex}[$j],
+                                                 'original_vertex',
+                                                 $vertex );
             }
         }
     }
