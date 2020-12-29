@@ -7,6 +7,7 @@ use parent 'Graph::Undirected';
 
 use Graph::Undirected;
 
+# ABSTRACT: Generate line graphs
 # VERSION
 
 sub new
