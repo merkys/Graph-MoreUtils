@@ -37,6 +37,15 @@ sub new
         }
     }
 
+    # Add self-loops for end vertices if requested
+    if( $options->{loop_end_vertices} ) {
+        for my $vertex ($graph->vertices) {
+            next if $graph->degree( $vertex ) != 1;
+            # Adjacency matrix will only have one item
+            $line_graph->add_edge( $adjacency->{$vertex}[0], {} );
+        }
+    }
+
     # Leave only old edge attributes in new vertices
     for my $vertex ($line_graph->vertices) {
         my $attr = $vertex->{attr};
