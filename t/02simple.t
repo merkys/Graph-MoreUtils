@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Graph::Line;
 use Graph::Undirected;
-use Test::More tests => 11;
+use Test::More tests => 13;
 
 my( $g, $l, @edges );
 
@@ -35,6 +35,11 @@ $g = Graph::Undirected->new( multiedged => 1 );
 $g->add_edges( [ 'A', 'B' ], [ 'A', 'B' ] );
 
 $l = Graph::Line->new( $g );
+
+is( $l->vertices, 2 );
+is( $l->edges, 1 );
+
+$l = Graph::Line->new( $g, { loop_end_vertices => 1 } );
 
 is( $l->vertices, 2 );
 is( $l->edges, 1 );
