@@ -44,7 +44,10 @@ sub new
         for my $vertex ($graph->vertices) {
             next if $graph->degree( $vertex ) != 1;
             # Adjacency matrix will only have one item
-            $line_graph->add_edge( $adjacency->{$vertex}[0], {} );
+            $line_graph->set_edge_attribute( $adjacency->{$vertex}[0],
+                                             {},
+                                             'original_vertex',
+                                             $vertex );
         }
     }
 
