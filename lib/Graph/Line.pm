@@ -38,6 +38,10 @@ sub new
     my $adjacency = {};
     for my $edge (@edges) {
         push @{$adjacency->{$edge->{orig}[0]}}, $edge;
+
+        # Self-loops have to be detected and not added once again
+        next if $edge->{orig}[0] eq $edge->{orig}[1];
+
         push @{$adjacency->{$edge->{orig}[1]}}, $edge;
     }
 
