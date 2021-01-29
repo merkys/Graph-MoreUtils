@@ -6,6 +6,7 @@ use warnings;
 use parent 'Graph::Undirected';
 
 use Graph::Undirected;
+use Scalar::Util qw( blessed );
 
 # ABSTRACT: Generate line graphs
 # VERSION
@@ -13,6 +14,10 @@ use Graph::Undirected;
 sub new
 {
     my( $class, $graph, $options ) = @_;
+
+    if( !blessed $graph || !$graph->isa( Graph::Undirected:: ) ) {
+        die 'only Graph::Undirected and its derivatives accepted' . "\n";
+    }
 
     $options = {} unless $options;
 
