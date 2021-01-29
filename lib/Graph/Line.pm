@@ -16,6 +16,7 @@ sub new
 
     $options = {} unless $options;
 
+    # Collect all edges prior to converting them to vertices
     my @edges;
     if( $graph->is_multiedged ) {
         for my $unique_edge ($graph->unique_edges) {
@@ -33,6 +34,7 @@ sub new
                      $graph->edges;
     }
 
+    # Collect adjacent edges for every vertice
     my $adjacency = {};
     for my $edge (@edges) {
         push @{$adjacency->{$edge->{orig}[0]}}, $edge;
@@ -58,6 +60,7 @@ sub new
         for my $vertex ($graph->vertices) {
             next if $graph->degree( $vertex ) != 1;
             # Adjacency matrix will only have one item
+            # TODO: create a new class for added self-loops
             $line_graph->set_edge_attribute( $adjacency->{$vertex}[0],
                                              {},
                                              'original_vertex',
