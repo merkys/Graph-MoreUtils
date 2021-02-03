@@ -21,38 +21,42 @@ sub new
 
     $options = {} unless $options;
 
-    # Collect all edges prior to converting them to vertices
-    my @edges;
+    # Collect all edges prior to converting them to vertices:
+    my @originals;
+    my @new_vertices;
     if( $graph->is_multiedged ) {
         for my $unique_edge ($graph->unique_edges) {
             for my $edge ($graph->get_multiedge_ids( @$unique_edge )) {
-                push @edges, {
-                        orig => $unique_edge,
-                        attr => $graph->get_edge_attributes_by_id( @$unique_edge,
-                                                                   $edge )
-                     };
+                push @originals, $unique_edge;
+                push @new_vertices,
+                     $graph->get_edge_attributes_by_id( @$unique_edge,
+                                                        $edge ) || {};
             }
         }
     } else {
-        @edges = map { { orig => $_,
-                         attr => $graph->get_edge_attributes( @$_ ) } }
-                     $graph->edges;
+        # Have to do this in for cycle to maintain relation between the
+        # parallel arrays:
+        for my $edge ($graph->edges) {
+            push @originals, $edge;
+            push @new_vertices,
+                 $graph->get_edge_attributes( @$edge ) || {};
+        }
     }
 
     # Collect adjacent edges for every vertice
     my $adjacency = {};
-    for my $edge (@edges) {
-        push @{$adjacency->{$edge->{orig}[0]}}, $edge;
+    for my $i (0..$#originals) {
+        push @{$adjacency->{$originals[$i]->[0]}}, $new_vertices[$i];
 
         # Self-loops have to be detected and not added once again
-        next if $edge->{orig}[0] eq $edge->{orig}[1];
+        next if $originals[$i]->[0] eq $originals[$i]->[1];
 
-        push @{$adjacency->{$edge->{orig}[1]}}, $edge;
+        push @{$adjacency->{$originals[$i]->[1]}}, $new_vertices[$i];
     }
 
     # Create the line graph
     my $line_graph = Graph::Undirected->new;
-    $line_graph->add_vertices( @edges );
+    $line_graph->add_vertices( @new_vertices );
     for my $vertex (sort keys %$adjacency) {
         for my $i (0..$#{$adjacency->{$vertex}}-1) {
             for my $j ($i+1..$#{$adjacency->{$vertex}}) {
@@ -75,15 +79,6 @@ sub new
                                              'original_vertex',
                                              $vertex );
         }
-    }
-
-    # Leave only old edge attributes in new vertices
-    for my $vertex ($line_graph->vertices) {
-        my $attr = $vertex->{attr};
-        delete $vertex->{attr};
-        delete $vertex->{orig};
-        next if !defined $attr;
-        %$vertex = %$attr;
     }
 
     return bless $line_graph, $class;
