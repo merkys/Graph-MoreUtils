@@ -5,6 +5,7 @@ use warnings;
 
 use parent 'Graph::Undirected';
 
+use Graph::Line::SelfLoopVertex;
 use Graph::Undirected;
 use Scalar::Util qw( blessed );
 
@@ -73,9 +74,8 @@ sub new
         for my $vertex ($graph->vertices) {
             next if $graph->degree( $vertex ) != 1;
             # Adjacency matrix will only have one item
-            # TODO: create a new class for added self-loops
             $line_graph->set_edge_attribute( $adjacency->{$vertex}[0],
-                                             {},
+                                             Graph::Line::SelfLoopVertex->new,
                                              'original_vertex',
                                              $vertex );
         }
