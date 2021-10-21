@@ -56,7 +56,7 @@ sub new
     }
 
     # Create the line graph
-    my $line_graph = Graph::Undirected->new;
+    my $line_graph = Graph::Undirected->new( refvertexed => 1 );
     $line_graph->add_vertices( @new_vertices );
     for my $vertex (sort keys %$adjacency) {
         for my $i (0..$#{$adjacency->{$vertex}}-1) {
