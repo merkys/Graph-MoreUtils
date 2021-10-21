@@ -31,22 +31,14 @@ sub new
         my $intermediate;
         if( $graph_now->has_edge_attribute( $a, $_, 'intermediate' ) &&
             $graph_now->has_edge_attribute( $b, $_, 'intermediate' ) ) {
-            if(      $_ lt $a ) {
-                $intermediate = Graph::Smoothed::Intermediate->new(
-                    $graph_now->get_edge_attribute( $a, $_, 'intermediate' )->reverse,
-                    $_,
-                    $graph_now->get_edge_attribute( $b, $_, 'intermediate' ) );
-            } elsif( $_ gt $b ) {
-                $intermediate = Graph::Smoothed::Intermediate->new(
-                    $graph_now->get_edge_attribute( $a, $_, 'intermediate' ),
-                    $_,
-                    $graph_now->get_edge_attribute( $b, $_, 'intermediate' )->reverse );
-            } else {
-                $intermediate = Graph::Smoothed::Intermediate->new(
-                    $graph_now->get_edge_attribute( $a, $_, 'intermediate' ),
-                    $_,
-                    $graph_now->get_edge_attribute( $b, $_, 'intermediate' ) );
-            }
+            $intermediate = Graph::Smoothed::Intermediate->new(
+                $_ lt $a
+                    ? $graph_now->get_edge_attribute( $a, $_, 'intermediate' )->reverse
+                    : $graph_now->get_edge_attribute( $a, $_, 'intermediate' ),
+                $_,
+                $_ gt $b
+                    ? $graph_now->get_edge_attribute( $b, $_, 'intermediate' )->reverse
+                    : $graph_now->get_edge_attribute( $b, $_, 'intermediate' ) );
         } elsif( $graph_now->has_edge_attribute( $a, $_, 'intermediate' ) ) {
             $intermediate = $graph_now->get_edge_attribute( $a, $_, 'intermediate' );
             $intermediate->reverse if $a gt $_; # getting natural order
