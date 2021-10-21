@@ -22,7 +22,7 @@ sub new
 
     my $graph_now = $graph->copy;
     for ($graph_now->vertices) {
-        next unless $graph_now->degree( $_ ) != 2;
+        next unless $graph_now->degree( $_ ) == 2;
         my( $a, $b ) = sort $graph_now->neighbours( $_ );
 
         # do not reduce cycles of three vertices:
@@ -60,7 +60,7 @@ sub new
         }
 
         $graph_now->delete_vertex( $_ );
-        $graph_now->set_edge_attribute( $a, $b, $intermediate );
+        $graph_now->set_edge_attribute( $a, $b, 'intermediate', $intermediate );
     }
 
     return bless $graph_now, $class;
