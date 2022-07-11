@@ -17,7 +17,6 @@ sub detect_rings
     my ( $graph, $atom, $original_atom, $previous_atom,
          $level, $seen_atoms ) = @_;
 
-    $level--  if defined $level;
     return () if defined $level && !$level;
 
     $seen_atoms = {} unless defined $seen_atoms;
@@ -71,7 +70,7 @@ sub detect_rings
                            $neighbour_atom,
                            $original_atom,
                            $atom,
-                           $level,
+                           defined $level ? $level - 1 : undef,
                            \%seen_atoms );
     }
 
