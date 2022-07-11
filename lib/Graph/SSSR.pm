@@ -12,6 +12,26 @@ sub get_SSSR
             $graph->vertices;
 }
 
+# This subroutine will return cycle base not containing 1-vertex-connected graphs.
+# TODO: Finish
+sub get_cycle_base
+{
+    my( $graph, $max_depth ) = @_;
+
+    my @SSSR = get_SSSR( $graph, $max_depth );
+    my %edge_participation;
+    for my $cycle (@SSSR) {
+        for my $i (0..$#$cycle) {
+            my $edge = join '', $cycle->[$i     % @$cycle],
+                                $cycle->[($i+1) % @$cycle];
+            $edge_participation{$edge} = [] unless $edge_participation{$edge};
+            push @{$edge_participation{$edge}}, $cycle;
+        }
+    }
+
+    # TODO: Cycle through all mutual edges and perform cycle addition
+}
+
 sub detect_rings
 {
     my ( $graph, $atom, $original_atom, $previous_atom,
