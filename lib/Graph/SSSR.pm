@@ -3,6 +3,9 @@ package Graph::SSSR;
 use strict;
 use warnings;
 
+# ABSTRACT: Find Smallest Set of Smallest Rings in graphs
+# VERSION
+
 sub get_SSSR
 {
     my( $graph, $max_depth ) = @_;
