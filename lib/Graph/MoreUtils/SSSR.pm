@@ -1,4 +1,4 @@
-package Graph::SSSR;
+package Graph::MoreUtils::SSSR;
 
 use strict;
 use warnings;
