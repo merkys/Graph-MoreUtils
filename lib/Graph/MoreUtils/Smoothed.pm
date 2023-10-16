@@ -1,9 +1,9 @@
-package Graph::Smoothed;
+package Graph::MoreUtils::Smoothed;
 
 use strict;
 use warnings;
 
-use Graph::Smoothed::Intermediate;
+use Graph::MoreUtils::Smoothed::Intermediate;
 use Graph::Undirected;
 use Scalar::Util qw( blessed );
 
@@ -31,7 +31,7 @@ sub new
         my $intermediate;
         if( $graph_now->has_edge_attribute( $a, $_, 'intermediate' ) &&
             $graph_now->has_edge_attribute( $b, $_, 'intermediate' ) ) {
-            $intermediate = Graph::Smoothed::Intermediate->new(
+            $intermediate = Graph::MoreUtils::Smoothed::Intermediate->new(
                 $_ lt $a
                     ? $graph_now->get_edge_attribute( $a, $_, 'intermediate' )->reverse
                     : $graph_now->get_edge_attribute( $a, $_, 'intermediate' ),
@@ -48,7 +48,7 @@ sub new
             $intermediate->reverse if $_ gt $b; # getting natural order
             unshift @$intermediate, $_;
         } else {
-            $intermediate = Graph::Smoothed::Intermediate->new( $_ );
+            $intermediate = Graph::MoreUtils::Smoothed::Intermediate->new( $_ );
         }
 
         $graph_now->delete_vertex( $_ );

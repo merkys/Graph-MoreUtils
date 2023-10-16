@@ -1,2 +1,2 @@
 use Test::More tests => 1;
-BEGIN { use_ok( 'Graph::Smoothed' ) };
+BEGIN { use_ok( 'Graph::MoreUtils::Smoothed' ) };
