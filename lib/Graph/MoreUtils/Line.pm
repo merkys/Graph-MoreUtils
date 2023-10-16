@@ -1,11 +1,11 @@
-package Graph::Line;
+package Graph::MoreUtils::Line;
 
 use strict;
 use warnings;
 
 use parent 'Graph::Undirected';
 
-use Graph::Line::SelfLoopVertex;
+use Graph::MoreUtils::Line::SelfLoopVertex;
 use Graph::Undirected;
 use Scalar::Util qw( blessed );
 
@@ -109,7 +109,7 @@ Graph::Line - generate line graphs
 =head1 DESCRIPTION
 
 Graph::Line generates line graphs for
-L<Graph::Undirected|Graph::Undirected> objects. Constructor C<new> is
+L<Graph::Undirected> objects. Constructor C<new> is
 the only overridden method, constructing (nondestructively) a line
 graph for input graph. Both simple and multiedged graphs are supported.
 
@@ -119,7 +119,7 @@ as having self-loops on pendant vertices, that is, increasing the
 degrees of vertices having degrees of 1. Thus they are not "lost"
 during line graph construction. In the resulting line graph these
 self-loops are represented as instances of
-L<Graph::Line::SelfLoopVertex|Graph::Line::SelfLoopVertex>.
+L<Graph::MoreUtils::Line::SelfLoopVertex>.
 
 =head1 SEE ALSO
 

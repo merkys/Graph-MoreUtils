@@ -1,4 +1,4 @@
-package Graph::Line::SelfLoopVertex;
+package Graph::MoreUtils::Line::SelfLoopVertex;
 
 use strict;
 use warnings;
@@ -20,14 +20,12 @@ __END__
 
 =head1 NAME
 
-Graph::Line::SelfLoopVertex - marker for artificial self-loops
+Graph::MoreUtils::Line::SelfLoopVertex - marker for artificial self-loops
 
 =head1 DESCRIPTION
 
-With C<loop_end_vertices> option L<Graph::Line|Graph::Line> adds
-self-loops on pendant vertices thus preserving them from getting "lost".
-Instances of Graph::Line::SelfLoopVertex are used to represent the
-artificial self-loops in the resulting line graphs.
+With C<loop_end_vertices> option L<Graph::Line> adds self-loops on pendant vertices thus preserving them from getting "lost".
+Instances of Graph::MoreUtils::Line::SelfLoopVertex are used to represent the artificial self-loops in the resulting line graphs.
 
 =head1 SEE ALSO
 
