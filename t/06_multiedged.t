@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Graph::Line;
+use Graph::MoreUtils::Line;
 use Graph::Undirected;
 use Test::More tests => 5;
 
@@ -12,7 +12,7 @@ $g->add_edges( [ 'A', 'B' ], [ 'A', 'B' ] );
 is( $g->vertices, 2 );
 is( $g->edges, 2 );
 
-my $l = Graph::Line->new( $g );
+my $l = Graph::MoreUtils::Line->new( $g );
 
 is( $l->vertices, 2 );
 is( $l->edges, 1 );
