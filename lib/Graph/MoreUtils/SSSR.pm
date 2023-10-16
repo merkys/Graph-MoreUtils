@@ -23,7 +23,7 @@ The default value of C<undef> stands for no limit.
 
 =cut
 
-sub get_SSSR
+sub SSSR
 {
     my( $graph, $max_depth ) = @_;
 
@@ -38,7 +38,7 @@ sub get_cycle_base
 {
     my( $graph, $max_depth ) = @_;
 
-    my @SSSR = get_SSSR( $graph, $max_depth );
+    my @SSSR = SSSR( $graph, $max_depth );
     my %edge_participation;
     for my $cycle (@SSSR) {
         for my $i (0..$#$cycle) {
