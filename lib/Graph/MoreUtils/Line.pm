@@ -75,7 +75,7 @@ sub new
             next if $graph->degree( $vertex ) != 1;
             # Adjacency matrix will only have one item
             $line_graph->set_edge_attribute( $adjacency->{$vertex}[0],
-                                             Graph::Line::SelfLoopVertex->new,
+                                             Graph::MoreUtils::Line::SelfLoopVertex->new,
                                              'original_vertex',
                                              $vertex );
         }
@@ -92,11 +92,11 @@ __END__
 
 =head1 NAME
 
-Graph::Line - generate line graphs
+Graph::MoreUtils::Line - generate line graphs
 
 =head1 SYNOPSIS
 
-    use Graph::Line;
+    use Graph::MoreUtils::Line;
     use Graph::Undirected;
 
     my $G = Graph::Undirected->new;
@@ -104,11 +104,11 @@ Graph::Line - generate line graphs
     # Greate graph here
 
     # Get line graph for $G:
-    my $L = Graph::Line->new( $G );
+    my $L = Graph::MoreUtils::Line->new( $G );
 
 =head1 DESCRIPTION
 
-Graph::Line generates line graphs for
+Graph::MoreUtils::Line generates line graphs for
 L<Graph::Undirected> objects. Constructor C<new> is
 the only overridden method, constructing (nondestructively) a line
 graph for input graph. Both simple and multiedged graphs are supported.
