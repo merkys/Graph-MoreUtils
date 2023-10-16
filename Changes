@@ -1,8 +1,0 @@
-0.1.1 unreleased
-
-    - Creating explicitly refvertexed Graph objects as mandated by Graph
-      documentation.
-
-0.1.0 2021-02-05
-
-    - Initial release.
