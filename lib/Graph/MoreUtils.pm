@@ -3,6 +3,24 @@ package Graph::MoreUtils;
 # ABSTRACT: Utilities for graphs
 # VERSION
 
+=head1 NAME
+
+Graph::MoreUtils - utilities for graphs
+
+=head1 SYNOPSIS
+
+    use Graph::MoreUtils qw( SSSR line smooth );
+    use Graph::Undirected;
+
+    my $G = Graph::Undirected->new;
+
+    # Greate graph here
+
+    # Get line graph for $G:
+    my $L = line( $G );
+
+=cut
+
 use strict;
 use warnings;
 

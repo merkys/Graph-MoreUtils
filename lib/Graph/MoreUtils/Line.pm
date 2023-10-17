@@ -1,10 +1,10 @@
 package Graph::MoreUtils::Line;
 
-use strict;
-use warnings;
-
 # ABSTRACT: Generate line graphs
 # VERSION
+
+use strict;
+use warnings;
 
 use Graph::MoreUtils::Line::SelfLoopVertex;
 use Graph::Undirected;
@@ -83,25 +83,3 @@ sub line
 }
 
 1;
-
-__END__
-
-=pod
-
-=head1 NAME
-
-Graph::MoreUtils::Line - generate line graphs
-
-=head1 SYNOPSIS
-
-    use Graph::MoreUtils::Line;
-    use Graph::Undirected;
-
-    my $G = Graph::Undirected->new;
-
-    # Greate graph here
-
-    # Get line graph for $G:
-    my $L = Graph::MoreUtils::Line->new( $G );
-
-=cut
