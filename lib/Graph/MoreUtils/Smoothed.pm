@@ -1,14 +1,14 @@
 package Graph::MoreUtils::Smoothed;
 
+# ABSTRACT: Generate smoothed graphs
+# VERSION
+
 use strict;
 use warnings;
 
 use Graph::MoreUtils::Smoothed::Intermediate;
 use Graph::Undirected;
 use Scalar::Util qw( blessed );
-
-# ABSTRACT: Generate smoothed graphs
-# VERSION
 
 sub smooth
 {
