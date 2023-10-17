@@ -36,6 +36,19 @@ our @EXPORT_OK = qw(
     smooth
 );
 
+=head2 C<SSSR( $graph, $max_depth )>
+
+Finds the Smallest Set of Smallest Rings (SSSR) in L<Graph> objects.
+Thus it should work with any L<Graph::Undirected> object.
+The code is largely taken from the C<cod-tools> package (L<https://wiki.crystallography.net/cod-tools/>).
+
+The algorithm returns a superset of minimum cycle basis of a graph in order to produce deterministic results.
+As a result it does not succumb to the counterexample of oxabicyclo[2.2.2]octane (L<https://depth-first.com/articles/2020/08/31/a-smallest-set-of-smallest-rings/>, section "SSSR and Uniqueness").
+The algorithm has means to control the maximum size of rings included in the SSSR to reduce its complexity.
+The default value of C<undef> stands for no limit.
+
+=cut
+
 sub SSSR { &Graph::MoreUtils::SSSR::SSSR }
 
 =head2 C<line( $graph )>
