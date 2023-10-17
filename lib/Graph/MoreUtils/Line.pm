@@ -3,21 +3,19 @@ package Graph::MoreUtils::Line;
 use strict;
 use warnings;
 
-use parent 'Graph::Undirected';
+# ABSTRACT: Generate line graphs
+# VERSION
 
 use Graph::MoreUtils::Line::SelfLoopVertex;
 use Graph::Undirected;
 use Scalar::Util qw( blessed );
 
-# ABSTRACT: Generate line graphs
-# VERSION
-
-sub new
+sub line
 {
-    my( $class, $graph, $options ) = @_;
+    my( $graph, $options ) = @_;
 
     if( !blessed $graph || !$graph->isa( Graph::Undirected:: ) ) {
-        die 'only Graph::Undirected and its derivatives accepted' . "\n";
+        die 'only Graph::Undirected and its derivatives are accepted' . "\n";
     }
 
     $options = {} unless $options;
@@ -81,7 +79,7 @@ sub new
         }
     }
 
-    return bless $line_graph, $class;
+    return $line_graph;
 }
 
 1;
