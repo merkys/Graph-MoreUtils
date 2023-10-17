@@ -104,22 +104,4 @@ Graph::MoreUtils::Line - generate line graphs
     # Get line graph for $G:
     my $L = Graph::MoreUtils::Line->new( $G );
 
-=head1 DESCRIPTION
-
-Graph::MoreUtils::Line generates line graphs for L<Graph::Undirected> objects.
-Constructor C<new> is the only overridden method, constructing (nondestructively) a line graph for input graph. Both simple and multiedged graphs are supported.
-
-Constructor C<new> accepts additional options hash.
-Currently only one option is supported, C<loop_end_vertices>, which treats the input graph as having self-loops on pendant vertices, that is, increasing the degrees of vertices having degrees of 1.
-Thus they are not "lost" during line graph construction.
-In the resulting line graph these self-loops are represented as instances of L<Graph::MoreUtils::Line::SelfLoopVertex>.
-
-=head1 SEE ALSO
-
-perl(1)
-
-=head1 AUTHORS
-
-Andrius Merkys, E<lt>merkys@cpan.orgE<gt>
-
 =cut
