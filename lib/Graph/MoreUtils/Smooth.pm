@@ -1,4 +1,4 @@
-package Graph::MoreUtils::Smoothed;
+package Graph::MoreUtils::Smooth;
 
 # ABSTRACT: Generate smoothed graphs
 # VERSION
@@ -6,7 +6,7 @@ package Graph::MoreUtils::Smoothed;
 use strict;
 use warnings;
 
-use Graph::MoreUtils::Smoothed::Intermediate;
+use Graph::MoreUtils::Smooth::Intermediate;
 use Graph::Undirected;
 use Scalar::Util qw( blessed );
 
@@ -28,7 +28,7 @@ sub smooth
         my $intermediate;
         if( $graph->has_edge_attribute( $a, $_, 'intermediate' ) &&
             $graph->has_edge_attribute( $b, $_, 'intermediate' ) ) {
-            $intermediate = Graph::MoreUtils::Smoothed::Intermediate->new(
+            $intermediate = Graph::MoreUtils::Smooth::Intermediate->new(
                 $_ lt $a
                     ? $graph->get_edge_attribute( $a, $_, 'intermediate' )->reverse
                     : $graph->get_edge_attribute( $a, $_, 'intermediate' ),
@@ -45,7 +45,7 @@ sub smooth
             $intermediate->reverse if $_ gt $b; # getting natural order
             unshift @$intermediate, $_;
         } else {
-            $intermediate = Graph::MoreUtils::Smoothed::Intermediate->new( $_ );
+            $intermediate = Graph::MoreUtils::Smooth::Intermediate->new( $_ );
         }
 
         $graph->delete_vertex( $_ );

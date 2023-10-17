@@ -28,7 +28,7 @@ use parent Exporter::;
 
 use Graph::MoreUtils::Line;
 use Graph::MoreUtils::SSSR;
-use Graph::MoreUtils::Smoothed;
+use Graph::MoreUtils::Smooth;
 
 our @EXPORT_OK = qw(
     SSSR
@@ -72,7 +72,7 @@ Smooths the given graph by collating vertices of degree 2.
 
 =cut
 
-sub smooth { &Graph::MoreUtils::Smoothed::smooth }
+sub smooth { &Graph::MoreUtils::Smooth::smooth }
 
 =head1 SEE ALSO
 
