@@ -1,12 +1,12 @@
 package Graph::MoreUtils::Smooth::Intermediate;
 
+# ABSTRACT: Container for intermediate vertices
+# VERSION
+
 use strict;
 use warnings;
 
 use Scalar::Util qw( blessed );
-
-# ABSTRACT: Generate smoothed graphs
-# VERSION
 
 sub new {
     my $class = shift;
