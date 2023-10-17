@@ -65,6 +65,13 @@ In the resulting line graph these self-loops are represented as instances of L<G
 =cut
 
 sub line { &Graph::MoreUtils::Line::line }
+
+=head2 C<smooth( $graph )>
+
+Smooths the given graph by collating vertices of degree 2.
+
+=cut
+
 sub smooth { &Graph::MoreUtils::Smoothed::smooth }
 
 =head1 SEE ALSO
