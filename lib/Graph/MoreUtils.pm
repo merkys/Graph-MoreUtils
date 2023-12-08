@@ -9,7 +9,7 @@ Graph::MoreUtils - utilities for graphs
 
 =head1 SYNOPSIS
 
-    use Graph::MoreUtils qw( SSSR line smooth );
+    use Graph::MoreUtils qw( line );
     use Graph::Undirected;
 
     my $G = Graph::Undirected->new;
