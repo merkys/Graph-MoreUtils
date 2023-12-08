@@ -27,11 +27,13 @@ use warnings;
 use parent Exporter::;
 
 use Graph::MoreUtils::Line;
+use Graph::MoreUtils::Replace;
 use Graph::MoreUtils::SSSR;
 use Graph::MoreUtils::Smooth;
 
 our @EXPORT_OK = qw(
     SSSR
+    graph_replace
     line
     smooth
 );
@@ -50,6 +52,15 @@ The default value of C<undef> stands for no limit.
 =cut
 
 sub SSSR { &Graph::MoreUtils::SSSR::SSSR }
+
+=head2 C<graph_replace( $graph, $new, @old )>
+
+Replaces one or more vertices (C<@old>) in the graph with a given one (C<$new>).
+All edges between the replaced vertices are removed and all edges with other vertices become a reconnected to the new one.
+
+=cut
+
+sub graph_replace { &Graph::MoreUtils::Replace::replace }
 
 =head2 C<line( $graph )>
 
