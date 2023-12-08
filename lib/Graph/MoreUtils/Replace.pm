@@ -6,6 +6,8 @@ package Graph::MoreUtils::Replace;
 use strict;
 use warnings;
 
+use Set::Object qw( set );
+
 sub replace
 {
     my( $graph, $new, @old ) = @_;
