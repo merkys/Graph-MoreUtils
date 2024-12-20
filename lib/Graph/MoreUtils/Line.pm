@@ -43,6 +43,7 @@ sub line
     # Interconnect edge vertices which share the original vertex
     for my $vertex ($graph->vertices) {
         if( $graph->is_directed ) {
+            # TODO: Check for self-loops
             for my $in ($line_graph->predecessors( $vertex )) {
                 for my $out ($line_graph->successors( $vertex )) {
                     $line_graph->set_edge_attribute( $in,
@@ -52,27 +53,21 @@ sub line
                 }
             }
         } else {
-            # TODO: Check for self-loops
-            next if $line_graph->degree( $vertex ) < 2;
-            for my $edge (combinations( [ $line_graph->neighbours( $vertex ) ], 2 )) {
-                $line_graph->set_edge_attribute( @$edge, 'original_vertex', $vertex );
+            next unless $line_graph->degree( $vertex );
+            if( $line_graph->degree( $vertex ) > 1 ) {
+                for my $edge (combinations( [ $line_graph->neighbours( $vertex ) ], 2 )) {
+                    $line_graph->set_edge_attribute( @$edge, 'original_vertex', $vertex );
+                }
+            } elsif( $options->{loop_end_vertices} ) {
+                $line_graph->set_edge_attribute( $line_graph->neighbours( $vertex ),
+                                                 Graph::MoreUtils::Line::SelfLoopVertex->new,
+                                                 'original_vertex',
+                                                 $vertex );
             }
         }
     }
 
     $line_graph->delete_vertices( $graph->vertices );
-
-    # Add self-loops for end vertices if requested
-    #~ if( $options->{loop_end_vertices} ) {
-        #~ for my $vertex ($graph->vertices) {
-            #~ next if $graph->degree( $vertex ) != 1;
-            #~ # Adjacency matrix will only have one item
-            #~ $line_graph->set_edge_attribute( $adjacency->{$vertex}[0],
-                                             #~ Graph::MoreUtils::Line::SelfLoopVertex->new,
-                                             #~ 'original_vertex',
-                                             #~ $vertex );
-        #~ }
-    #~ }
 
     return $line_graph;
 }
