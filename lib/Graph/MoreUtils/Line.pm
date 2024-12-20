@@ -6,6 +6,7 @@ package Graph::MoreUtils::Line;
 use strict;
 use warnings;
 
+use Graph;
 use Graph::MoreUtils::Line::SelfLoopVertex;
 use Graph::Undirected;
 use Scalar::Util qw( blessed );
@@ -14,8 +15,8 @@ sub line
 {
     my( $graph, $options ) = @_;
 
-    if( !blessed $graph || !$graph->isa( Graph::Undirected:: ) ) {
-        die 'only Graph::Undirected and its derivatives are accepted' . "\n";
+    if( !blessed $graph || !$graph->isa( Graph:: ) ) {
+        die 'only Graph and its derivatives are accepted' . "\n";
     }
 
     $options = {} unless $options;
