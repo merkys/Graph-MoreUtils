@@ -46,13 +46,18 @@ sub line
         if( $graph->is_directed ) {
             for my $in ($line_graph->predecessors( $vertex )) {
                 for my $out ($line_graph->successors( $vertex )) {
-                    $line_graph->add_edge( $in, $out );
+                    $line_graph->set_edge_attribute( $in,
+                                                     $out,
+                                                     'original_vertex',
+                                                     $vertex );
                 }
             }
         } else {
             # TODO: Check for self-loops
             next if $line_graph->degree( $vertex ) < 2;
-            $line_graph->add_edges( combinations( [ $line_graph->neighbours( $vertex ) ], 2 ) );
+            for my $edge (combinations( [ $line_graph->neighbours( $vertex ) ], 2 )) {
+                $line_graph->set_edge_attribute( @$edge, 'original_vertex', $vertex );
+            }
         }
     }
 
