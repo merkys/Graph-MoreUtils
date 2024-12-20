@@ -26,6 +26,13 @@ sub line
 
     # Add the edges as vertices to the edge graph
     if( $graph->is_multiedged ) {
+        for my $unique_edge ($graph->unique_edges) {
+            for my $edge ($graph->get_multiedge_ids( @$unique_edge )) {
+                my $edge_vertex = $graph->get_edge_attributes_by_id( @$unique_edge, $edge ) || {};
+                $line_graph->delete_edge_by_id( @$unique_edge, $edge );
+                $line_graph->add_path( $unique_edge->[0], $edge_vertex, $unique_edge->[1] );
+            }
+        }
     } else {
         for my $edge ($graph->edges) {
             my $edge_vertex = $graph->get_edge_attributes( @$edge ) || {};
@@ -37,7 +44,7 @@ sub line
     # Interconnect edge vertices which share the original vertex
     for my $vertex ($graph->vertices) {
         if( $graph->is_directed ) {
-            for my $in ($line_graph->predecesors( $vertex )) {
+            for my $in ($line_graph->predecessors( $vertex )) {
                 for my $out ($line_graph->successors( $vertex )) {
                     $line_graph->add_edge( $in, $out );
                 }
