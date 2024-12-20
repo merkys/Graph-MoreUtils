@@ -6,6 +6,7 @@ package Graph::MoreUtils::Line;
 use strict;
 use warnings;
 
+use Algorithm::Combinatorics qw( combinations );
 use Graph;
 use Graph::MoreUtils::Line::SelfLoopVertex;
 use Graph::Undirected;
@@ -21,64 +22,46 @@ sub line
 
     $options = {} unless $options;
 
-    # Collect all edges prior to converting them to vertices:
-    my @originals;
-    my @new_vertices;
+    my $line_graph = $graph->copy;
+
+    # Add the edges as vertices to the edge graph
     if( $graph->is_multiedged ) {
-        for my $unique_edge ($graph->unique_edges) {
-            for my $edge ($graph->get_multiedge_ids( @$unique_edge )) {
-                push @originals, $unique_edge;
-                push @new_vertices,
-                     $graph->get_edge_attributes_by_id( @$unique_edge,
-                                                        $edge ) || {};
-            }
-        }
     } else {
-        # Have to do this in for cycle to maintain relation between the
-        # parallel arrays:
         for my $edge ($graph->edges) {
-            push @originals, $edge;
-            push @new_vertices,
-                 $graph->get_edge_attributes( @$edge ) || {};
+            my $edge_vertex = $graph->get_edge_attributes( @$edge ) || {};
+            $line_graph->delete_edge( @$edge );
+            $line_graph->add_path( $edge->[0], $edge_vertex, $edge->[1] );
         }
     }
 
-    # Collect adjacent edges for every vertice
-    my $adjacency = {};
-    for my $i (0..$#originals) {
-        push @{$adjacency->{$originals[$i]->[0]}}, $new_vertices[$i];
-
-        # Self-loops have to be detected and not added once again
-        next if $originals[$i]->[0] eq $originals[$i]->[1];
-
-        push @{$adjacency->{$originals[$i]->[1]}}, $new_vertices[$i];
-    }
-
-    # Create the line graph
-    my $line_graph = Graph::Undirected->new( refvertexed => 1 );
-    $line_graph->add_vertices( @new_vertices );
-    for my $vertex (sort keys %$adjacency) {
-        for my $i (0..$#{$adjacency->{$vertex}}-1) {
-            for my $j ($i+1..$#{$adjacency->{$vertex}}) {
-                $line_graph->set_edge_attribute( $adjacency->{$vertex}[$i],
-                                                 $adjacency->{$vertex}[$j],
-                                                 'original_vertex',
-                                                 $vertex );
+    # Interconnect edge vertices which share the original vertex
+    for my $vertex ($graph->vertices) {
+        if( $graph->is_directed ) {
+            for my $in ($line_graph->predecesors( $vertex )) {
+                for my $out ($line_graph->successors( $vertex )) {
+                    $line_graph->add_edge( $in, $out );
+                }
             }
+        } else {
+            # TODO: Check for self-loops
+            next if $line_graph->degree( $vertex ) < 2;
+            $line_graph->add_edges( combinations( [ $line_graph->neighbours( $vertex ) ], 2 ) );
         }
     }
+
+    $line_graph->delete_vertices( $graph->vertices );
 
     # Add self-loops for end vertices if requested
-    if( $options->{loop_end_vertices} ) {
-        for my $vertex ($graph->vertices) {
-            next if $graph->degree( $vertex ) != 1;
-            # Adjacency matrix will only have one item
-            $line_graph->set_edge_attribute( $adjacency->{$vertex}[0],
-                                             Graph::MoreUtils::Line::SelfLoopVertex->new,
-                                             'original_vertex',
-                                             $vertex );
-        }
-    }
+    #~ if( $options->{loop_end_vertices} ) {
+        #~ for my $vertex ($graph->vertices) {
+            #~ next if $graph->degree( $vertex ) != 1;
+            #~ # Adjacency matrix will only have one item
+            #~ $line_graph->set_edge_attribute( $adjacency->{$vertex}[0],
+                                             #~ Graph::MoreUtils::Line::SelfLoopVertex->new,
+                                             #~ 'original_vertex',
+                                             #~ $vertex );
+        #~ }
+    #~ }
 
     return $line_graph;
 }
