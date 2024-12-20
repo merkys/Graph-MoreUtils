@@ -22,21 +22,20 @@ sub line
 
     $options = {} unless $options;
 
-    my $line_graph = $graph->copy;
+    my $line_graph = Graph->new( directed => $graph->is_directed,
+                                 refvertexed => 1 );
 
     # Add the edges as vertices to the edge graph
     if( $graph->is_multiedged ) {
         for my $unique_edge ($graph->unique_edges) {
             for my $edge ($graph->get_multiedge_ids( @$unique_edge )) {
                 my $edge_vertex = $graph->get_edge_attributes_by_id( @$unique_edge, $edge ) || {};
-                $line_graph->delete_edge_by_id( @$unique_edge, $edge );
                 $line_graph->add_path( $unique_edge->[0], $edge_vertex, $unique_edge->[1] );
             }
         }
     } else {
         for my $edge ($graph->edges) {
             my $edge_vertex = $graph->get_edge_attributes( @$edge ) || {};
-            $line_graph->delete_edge( @$edge );
             $line_graph->add_path( $edge->[0], $edge_vertex, $edge->[1] );
         }
     }
