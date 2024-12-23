@@ -91,9 +91,4 @@ sub orbits
     return @orbits;
 }
 
-sub represent_orbits
-{
-    return join( ',', sort map { scalar @$_ } @_ ), "\n";
-}
-
 1;

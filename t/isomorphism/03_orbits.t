@@ -3,22 +3,30 @@
 use strict;
 use warnings;
 
-use Algorithm::Combinatorics qw( combinations );
 use Graph::MoreUtils qw( orbits );
 use Graph::Undirected;
-use Test::More tests => 2;
+use Test::More;
 
-my $g;
+plan skip_all => "Skip \$ENV{EXTENDED_TESTING} is not set\n" unless $ENV{EXTENDED_TESTING};
 
-# Complete graph of 5 vertices
+eval 'use Graph::Maker';
+plan skip_all => 'no Graph::Maker' if $@;
+eval 'use Graph::Maker::Random';
+plan skip_all => 'no Graph::Maker::Random' if $@;
+eval 'use Graph::Nauty';
+plan skip_all => 'no Graph::Nauty' if $@;
 
-$g = Graph::Undirected->new;
-$g->add_edges( combinations( [1..5], 2 ) );
+my $N = 100;
+my $srand = srand;
 
-is scalar orbits( $g, sub { '' } ), 1;
+plan tests => $N;
 
-# Let us attach yet another vertex
+for (1..$N) {
+    my $g = Graph::Maker->new( 'random', N => 100, PR => 0.75, undirected => 1 );
 
-$g->add_edge( 5, 6 );
+    my $GN_orbits    = represent_orbits( Graph::Nauty::orbits( $g, sub { '' } ) );
+    my $local_orbits = represent_orbits( orbits( $g, sub { '' } ) );
+    is $GN_orbits, $local_orbits, "srand $srand, test $_";
+}
 
-is scalar orbits( $g, sub { '' } ), 3;
+sub represent_orbits { join( ',', sort map { scalar @$_ } @_ ), "\n" }
