@@ -1,4 +1,7 @@
-#!/usr/bin/perl
+package Graph::MoreUtils::Isomorphism;
+
+# ABSTRACT: Isomorphism and automorphism lookup
+# VERSION
 
 use strict;
 use warnings;
