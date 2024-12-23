@@ -3,9 +3,6 @@
 use strict;
 use warnings;
 
-use Graph::Maker;
-use Graph::Maker::Random;
-use Graph::Nauty;
 use List::Util qw( all uniq );
 use Set::Object qw( set );
 
@@ -96,13 +93,4 @@ sub represent_orbits
     return join( ',', sort map { scalar @$_ } @_ ), "\n";
 }
 
-print srand, "\n";
-
-for (1..100) {
-    my $g = Graph::Maker->new( 'random', N => 100, PR => 0.75, undirected => 1 );
-
-    my( $GN_orbits, $local_orbits );
-    $GN_orbits    = represent_orbits( Graph::Nauty::orbits( $g, sub { '' } ) );
-    $local_orbits = represent_orbits( orbits( $g, sub { '' } ) );
-    print "$_: ", ($GN_orbits eq $local_orbits ? 'OK' : 'NOT OK'), "\n";
-}
+1;
