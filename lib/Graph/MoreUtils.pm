@@ -26,6 +26,7 @@ use warnings;
 
 use parent Exporter::;
 
+use Graph::MoreUtils::Isomorphism;
 use Graph::MoreUtils::Line;
 use Graph::MoreUtils::Replace;
 use Graph::MoreUtils::SSSR;
@@ -35,6 +36,7 @@ our @EXPORT_OK = qw(
     SSSR
     graph_replace
     line
+    orbits
     smooth
 );
 
@@ -77,6 +79,8 @@ This does not work with directed graphs yet.
 =cut
 
 sub line { &Graph::MoreUtils::Line::line }
+
+sub orbits { &Graph::MoreUtils::Isomorphism::orbits }
 
 =head2 C<smooth( $graph )>
 
