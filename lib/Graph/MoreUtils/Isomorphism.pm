@@ -6,6 +6,7 @@ package Graph::MoreUtils::Isomorphism;
 use strict;
 use warnings;
 
+use Graph::Traversal::DFS;
 use List::Util qw( all uniq );
 use Set::Object qw( set );
 
@@ -58,6 +59,40 @@ sub rename_colors
         }
         return map { ( $_ => $color_to_number{$colors{$_}} ) } keys %colors;
     }
+}
+
+sub canonical_order
+{
+    my( $graph, $color_sub ) = @_;
+
+    my @orbits = map { set( @$_ ) } orbits( $graph, $color_sub );
+
+    my $next_root = sub {
+                            my( undef, $candidates ) = @_;
+                            return unless %$candidates;
+                            my @successors;
+                            for my $orbit (@orbits) {
+                                @successors = grep { $orbit->contains( $candidates->{$_} ) } keys %$candidates;
+                                last if @successors;
+                            }
+                            return shift @successors;
+                        };
+
+    my $operations = {
+        first_root => $next_root,
+        next_root => $next_root,
+        next_successor => $next_root,
+
+        pre => sub {
+                        my $vertex = shift;
+                        for (@orbits) {
+                            $_->remove( $vertex ) && last;
+                        }
+                        @orbits = grep { $_->size } @orbits;
+                   },
+    };
+
+    return reverse Graph::Traversal::DFS->new( $graph, %$operations )->dfs;
 }
 
 sub orbits

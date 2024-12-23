@@ -34,6 +34,7 @@ use Graph::MoreUtils::Smooth;
 
 our @EXPORT_OK = qw(
     SSSR
+    canonical_order
     graph_replace
     line
     orbits
@@ -54,6 +55,8 @@ The default value of C<undef> stands for no limit.
 =cut
 
 sub SSSR { &Graph::MoreUtils::SSSR::SSSR }
+
+sub canonical_order { &Graph::MoreUtils::Isomorphism::canonical_order }
 
 =head2 C<graph_replace( $graph, $new, @old )>
 

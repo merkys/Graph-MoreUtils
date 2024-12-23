@@ -4,9 +4,9 @@ use strict;
 use warnings;
 
 use Algorithm::Combinatorics qw( combinations );
-use Graph::MoreUtils qw( orbits );
+use Graph::MoreUtils qw( canonical_order orbits );
 use Graph::Undirected;
-use Test::More tests => 2;
+use Test::More tests => 3;
 
 my $g;
 
@@ -22,3 +22,6 @@ is scalar orbits( $g, sub { '' } ), 1;
 $g->add_edge( 5, 6 );
 
 is scalar orbits( $g, sub { '' } ), 3;
+
+my @order = canonical_order( $g, sub { '' } );
+is $order[-1], '6';
