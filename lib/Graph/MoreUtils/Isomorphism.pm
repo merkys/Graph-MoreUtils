@@ -1,0 +1,108 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Graph::Maker;
+use Graph::Maker::Random;
+use Graph::Nauty;
+use List::Util qw( all uniq );
+use Set::Object qw( set );
+
+sub frequency_table
+{
+    my %freq;
+    for (@_) { $freq{$_}++ }
+    return \%freq;
+}
+
+sub cmp_frequency_tables
+{
+    my( $A, $B ) = @_;
+
+    # Empty tables are the last
+    return     scalar( keys %$B ) <=> scalar( keys %$A )
+        unless scalar( keys %$A ) &&  scalar( keys %$B );
+
+    my $keys = set( keys %$A, keys %$B );
+    for (sort { $a <=> $b } @$keys) {
+        return     exists $B->{$_} <=> exists $A->{$_}
+            unless exists $B->{$_} &&  exists $A->{$_};
+        return     $B->{$_} <=> $A->{$_}
+            unless $B->{$_} == $A->{$_};
+    }
+
+    return 0;
+}
+
+sub rename_colors
+{
+    my %colors = @_;
+    if( all { ref $_ } values %colors ) {
+        # All values are frequency tables
+        my @keys = sort { cmp_frequency_tables( $colors{$a}, $colors{$b} ) } keys %colors;
+        my %colors_now = ( $keys[0] => 0 );
+        for (1..$#keys) {
+            if( cmp_frequency_tables( $colors{$keys[$_-1]}, $colors{$keys[$_]} ) ) {
+                $colors_now{$keys[$_]} = $colors_now{$keys[$_-1]} + 1;
+            } else {
+                $colors_now{$keys[$_]} = $colors_now{$keys[$_-1]};
+            }
+        }
+        return %colors_now;
+    } else {
+        # All values are strings
+        my %color_to_number;
+        for (sort { $a cmp $b } uniq values %colors) {
+            $color_to_number{$_} = scalar keys %color_to_number;
+        }
+        return map { ( $_ => $color_to_number{$colors{$_}} ) } keys %colors;
+    }
+}
+
+sub orbits
+{
+    my( $graph, $color_sub ) = @_;
+
+    $color_sub = sub { "$_[0]" } unless $color_sub;
+
+    my %colors = rename_colors( map { ( $_ => $color_sub->( $_ ) ) }
+                                    $graph->vertices );
+    my @init_order = sort { $colors{$a} cmp $colors{$b} }
+                     $graph->vertices;
+
+    while( 1 ) {
+        my %colors_now;
+        for my $vertex ($graph->vertices) {
+            $colors_now{$vertex} = frequency_table( map { $colors{$_} } $graph->neighbours( $vertex ) );
+        }
+        %colors_now = rename_colors( %colors_now );
+        last if uniq( values %colors ) == uniq( values %colors_now );
+        %colors = %colors_now;
+    }
+
+    my $seen = set();
+    my @orbits;
+    for my $vertex (@init_order) {
+        next if $seen->has( $vertex );
+        push @orbits, [ grep { $colors{$_} eq $colors{$vertex} } @init_order ];
+        $seen->insert( @{$orbits[-1]} );
+    }
+    return @orbits;
+}
+
+sub represent_orbits
+{
+    return join( ',', sort map { scalar @$_ } @_ ), "\n";
+}
+
+print srand, "\n";
+
+for (1..100) {
+    my $g = Graph::Maker->new( 'random', N => 100, PR => 0.75, undirected => 1 );
+
+    my( $GN_orbits, $local_orbits );
+    $GN_orbits    = represent_orbits( Graph::Nauty::orbits( $g, sub { '' } ) );
+    $local_orbits = represent_orbits( orbits( $g, sub { '' } ) );
+    print "$_: ", ($GN_orbits eq $local_orbits ? 'OK' : 'NOT OK'), "\n";
+}
