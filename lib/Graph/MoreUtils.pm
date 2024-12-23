@@ -80,6 +80,16 @@ This does not work with directed graphs yet.
 
 sub line { &Graph::MoreUtils::Line::line }
 
+=head2 C<orbits( $graph, $color_sub )>
+
+Partitions the graph vertices to equivalence classes (returns an array of arrays).
+Accepts colored vertices by stringifying them using Perl C<""> operator.
+If different behavior is needed, a custom anonymous subroutine can be passed as the second parameter:
+
+    print orbits( $G, sub { length $_[0] } );
+
+=cut
+
 sub orbits { &Graph::MoreUtils::Isomorphism::orbits }
 
 =head2 C<smooth( $graph )>
