@@ -23,5 +23,7 @@ $g->add_edge( 5, 6 );
 
 is scalar orbits( $g, sub { '' } ), 3;
 
+# Order might be nondeterministic for first 5 positions, but the last will always stay the same
+
 my @order = canonical_order( $g, sub { '' } );
 is $order[-1], '6';
