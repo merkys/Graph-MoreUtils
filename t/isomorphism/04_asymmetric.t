@@ -34,7 +34,7 @@ $g5->add_path( 1..6, 2 );
 $g5->add_path( 4, 6 );
 
 my $g6 = Graph::Undirected->new;
-$g6->add_path( 1..6, 1 );
+$g6->add_cycle( 1..6 );
 $g6->add_path( 4, 2, 5 );
 
 my $g7 = Graph::Undirected->new;
@@ -42,8 +42,8 @@ $g7->add_path( 1..5, 1, 6 );
 $g7->add_path( 4, 2, 5 );
 
 my $g8 = Graph::Undirected->new;
-$g8->add_path( 1..6, 1 );
-$g8->add_path( 1, 5, 3 );
+$g8->add_cycle( 1..6, 1 );
+$g8->add_path( 4, 1, 5, 3 );
 
 my @graphs = ( $g1, $g2, $g3, $g4, $g5, $g6, $g7, $g8 );
 for (@graphs) {
