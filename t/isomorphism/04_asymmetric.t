@@ -47,5 +47,5 @@ $g8->add_path( 1, 5, 3 );
 
 my @graphs = ( $g1, $g2, $g3, $g4, $g5, $g6, $g7, $g8 );
 for (@graphs) {
-    is scalar orbits( $_ ), 6;
+    is scalar orbits( $_, sub { '' } ), 6;
 }
