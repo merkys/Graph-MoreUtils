@@ -102,7 +102,15 @@ sub orbits
     my( $graph, $color_sub ) = @_;
     my $automorphisms = Graph::Undirected->new( multiedged => 0 );
     individualise_dfs( $graph, 0, $automorphisms, equitable_partition( $graph, $color_sub ) );
-    print Dumper [ $automorphisms->connected_components ];
+
+    for ($graph->vertices) {
+        next if $automorphisms->has_vertex( $_ );
+        $automorphisms->add_vertex( $_ );
+    }
+
+    my @components = $automorphisms->connected_components;
+    @components = map { [ sort @$_ ] } @components;
+    return sort { $a->[0] <=> $b->[0] } @components;
 }
 
 # Graph from "Node invariants and pruning"
@@ -145,4 +153,4 @@ for ($g3->vertices) {
     $g3_colors{$_} = 0;
 }
 
-orbits( $g1, sub { $g1_colors{$_[0]} } );
+print Dumper [ orbits( $g2, sub { $g2_colors{$_[0]} } ) ];
