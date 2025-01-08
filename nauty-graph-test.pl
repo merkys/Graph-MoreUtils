@@ -7,6 +7,7 @@ use Data::Dumper;
 use Graph::MoreUtils qw( orbits );
 use Graph::Undirected;
 use List::Util qw( first uniq );
+use Set::Object qw( set );
 
 $Data::Dumper::Sortkeys = 1;
 
@@ -50,11 +51,24 @@ sub individualise_dfs
 
         my @partitions;
         my @automorphisms;
-        for (sort @orbit) { print ">>>> individualise $_\n";
+
+        # Only look into non-automorphic vertices
+        my $orbit_set = set( @orbit );
+        for (sort @orbit) {
+            next unless $automorphisms->has_vertex( $_ );
+            next unless $orbit_set->has( $_ );
+            $orbit_set->remove( $automorphisms->neighbours( $_ ) );
+        }
+        print "TRIMMED\n" unless $orbit_set->size;
+
+        for (sort @$orbit_set) {
+            # TODO: No need to individualise vertex if any of its automorphisms were already checked
+            print ">>>> individualise $_\n";
             my %colors = individualise( %colors, $_ );
             my @orbits = orbits( $graph, sub { $colors{$_[0]} } );
             if( @orbits == $graph->vertices ) {
                 push @automorphisms, \@orbits;
+                print "END\n";
             } else {
                 individualise_dfs( $graph, @orbits );
             }
@@ -74,20 +88,20 @@ sub individualise_dfs
 }
 
 my $g = Graph::Undirected->new;
-$g->add_cycle( '01', '04', '09', '05', '02', '06', '10', '03' );
-$g->add_path( '03', '07', '05' );
-$g->add_path( '04', '08', '06' );
-$g->add_edge( '07', '09' );
-$g->add_edge( '08', '10' );
-#~ $g->add_cycle( 0..4 );
-#~ $g->add_cycle( 5, 7, 9, 6, 8 );
-#~ for (0..4) {
-    #~ $g->add_edge( $_, 5 + $_ );
-#~ }
+#~ $g->add_cycle( '01', '04', '09', '05', '02', '06', '10', '03' );
+#~ $g->add_path( '03', '07', '05' );
+#~ $g->add_path( '04', '08', '06' );
+#~ $g->add_edge( '07', '09' );
+#~ $g->add_edge( '08', '10' );
+$g->add_cycle( 0..4 );
+$g->add_cycle( 5, 7, 9, 6, 8 );
+for (0..4) {
+    $g->add_edge( $_, 5 + $_ );
+}
 
 my %colors;
 for ($g->vertices) {
-    $colors{$_} = 0 + ($_ > 2);
+    $colors{$_} = 0; # + ($_ > 2);
 }
 
 my @orbits = orbits( $g, sub { $colors{$_[0]} } );
