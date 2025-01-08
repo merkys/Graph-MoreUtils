@@ -35,11 +35,21 @@ sub color_by_orbits
     return %colors;
 }
 
+sub sprint_components
+{
+    my( $graph ) = @_;
+    my @components = $graph->connected_components;
+    @components = map { [ sort @$_ ] } @components;
+    @components = sort { $a->[0] <=> $b->[0] } @components;
+    return '[ ' . join( ' | ', map { "@$_" } @components ) . ' ]';
+}
+
 my $automorphisms = Graph::Undirected->new( multiedged => 0 );
 
 sub individualise_dfs
 {
     my $graph = shift;
+    my $level = shift;
     my @orbits = @_;
 
     my %colors = color_by_orbits( @orbits );
@@ -63,14 +73,14 @@ sub individualise_dfs
 
         for (sort @$orbit_set) {
             # TODO: No need to individualise vertex if any of its automorphisms were already checked
-            print ">>>> individualise $_\n";
+            print ' ' x $level, ">>>> individualise $_\n";
             my %colors = individualise( %colors, $_ );
             my @orbits = orbits( $graph, sub { $colors{$_[0]} } );
             if( @orbits == $graph->vertices ) {
                 push @automorphisms, \@orbits;
-                print "END\n";
+                print ' ' x ($level+2), "END\n";
             } else {
-                individualise_dfs( $graph, @orbits );
+                individualise_dfs( $graph, $level + 2, @orbits );
             }
         }
 
@@ -83,27 +93,27 @@ sub individualise_dfs
                                               $automorphisms[$j]->[$k][0] );
                 }
             }
-        } print $automorphisms, "\n" if @automorphisms;
+        } print ' ' x $level, sprint_components( $automorphisms ), "\n" if @automorphisms;
     }
 }
 
 my $g = Graph::Undirected->new;
-#~ $g->add_cycle( '01', '04', '09', '05', '02', '06', '10', '03' );
-#~ $g->add_path( '03', '07', '05' );
-#~ $g->add_path( '04', '08', '06' );
-#~ $g->add_edge( '07', '09' );
-#~ $g->add_edge( '08', '10' );
-$g->add_cycle( 0..4 );
-$g->add_cycle( 5, 7, 9, 6, 8 );
-for (0..4) {
-    $g->add_edge( $_, 5 + $_ );
-}
+$g->add_cycle( '01', '04', '09', '05', '02', '06', '10', '03' );
+$g->add_path( '03', '07', '05' );
+$g->add_path( '04', '08', '06' );
+$g->add_edge( '07', '09' );
+$g->add_edge( '08', '10' );
+#~ $g->add_cycle( 0..4 );
+#~ $g->add_cycle( 5, 7, 9, 6, 8 );
+#~ for (0..4) {
+    #~ $g->add_edge( $_, 5 + $_ );
+#~ }
 
 my %colors;
 for ($g->vertices) {
-    $colors{$_} = 0; # + ($_ > 2);
+    $colors{$_} = 0 + ($_ > 2);
 }
 
 my @orbits = orbits( $g, sub { $colors{$_[0]} } );
-individualise_dfs( $g, @orbits );
-# print Dumper [ $automorphisms->connected_components ];
+individualise_dfs( $g, 0, @orbits );
+print Dumper [ $automorphisms->connected_components ];
