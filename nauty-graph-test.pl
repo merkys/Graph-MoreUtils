@@ -42,14 +42,14 @@ sub individualise_dfs
     my %colors = @_;
 
     my @orbit;
-    for my $color (sort uniq values %colors) {
-        @orbit = grep { $colors{$_} == $color } sort keys %colors;
+    for my $color (sort( uniq( values %colors ) )) {
+        @orbit = grep { $colors{$_} == $color } keys %colors;
         last if @orbit > 1;
-    }
+    } print "@orbit\n";
 
     my @partitions;
     my @automorphisms;
-    for (@orbit) {
+    for (sort @orbit) { print ">>>> individualise $_\n";
         my %colors = individualise( %colors, $_ );
         my @orbits = orbits( $graph, sub { $colors{$_[0]} } );
         if( @orbits == $graph->vertices ) {
@@ -57,7 +57,7 @@ sub individualise_dfs
         } else {
             individualise_dfs( $graph, color_by_orbits( @orbits ) );
         }
-    } print Dumper \@automorphisms if @automorphisms;
+    }
 
     for my $i (0..$#automorphisms) {
         for my $j (0..$#automorphisms) {
@@ -68,7 +68,7 @@ sub individualise_dfs
                                           $automorphisms[$j]->[$k][0] );
             }
         }
-    } print $automorphisms, "\n" if @automorphisms; print scalar $automorphisms->edges, "\n" if @automorphisms;
+    } print $automorphisms, "\n" if @automorphisms;
 }
 
 my $g = Graph::Undirected->new;
