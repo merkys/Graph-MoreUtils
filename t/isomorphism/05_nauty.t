@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Graph::MoreUtils qw( equitable_partitions );
+use Graph::MoreUtils qw( equitable_partition );
 use Graph::Undirected;
 use Test::More tests => 5;
 
@@ -17,13 +17,13 @@ $g = Graph::Undirected->new;
 $g->add_cycle( 1..8 );
 $g->add_cycle( 3, 4, 7, 8 );
 
-is scalar equitable_partitions( $g, sub { '' } ), 2;
+is scalar equitable_partition( $g, sub { '' } ), 2;
 
 $g = Graph::Undirected->new;
 $g->add_cycle( 1..8 );
 $g->add_cycle( 3, 4, 8, 7 );
 
-is scalar equitable_partitions( $g, sub { '' } ), 2;
+is scalar equitable_partition( $g, sub { '' } ), 2;
 
 # Example from "Partition refinement"
 
@@ -31,7 +31,7 @@ $g = Graph::Undirected->new;
 $g->add_cycle( 1..8 );
 $g->add_cycle( 3, 4, 8, 7 );
 
-is scalar equitable_partitions( $g, sub { $_[0] == 6 } ), 6;
+is scalar equitable_partition( $g, sub { $_[0] == 6 } ), 6;
 
 # Example from "Equitable Partition and Orbit Partition - An Example", with and without coloring
 # It seems that this case fails the algorithm
@@ -43,5 +43,5 @@ $g->add_path( 4, 8, 6 );
 $g->add_edge( 7, 9 );
 $g->add_edge( 8, 10 );
 
-is scalar equitable_partitions( $g, sub { '' } ), 3;
-is scalar equitable_partitions( $g, sub { $_[0] < 3 } ), 3;
+is scalar equitable_partition( $g, sub { '' } ), 3;
+is scalar equitable_partition( $g, sub { $_[0] < 3 } ), 3;

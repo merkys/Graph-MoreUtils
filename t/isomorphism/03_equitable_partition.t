@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Graph::MoreUtils qw( equitable_partitions );
+use Graph::MoreUtils qw( equitable_partition );
 use Graph::Undirected;
 use Test::More;
 
@@ -25,7 +25,7 @@ for (1..$N) {
     my $g = Graph::Maker->new( 'random', N => 100, PR => 0.75, undirected => 1 );
 
     my $GN_orbits    = represent_orbits( Graph::Nauty::orbits( $g, sub { '' } ) );
-    my $local_orbits = represent_orbits( equitable_partitions( $g, sub { '' } ) );
+    my $local_orbits = represent_orbits( equitable_partition( $g, sub { '' } ) );
     is $GN_orbits, $local_orbits, "srand $srand, test $_";
 }
 

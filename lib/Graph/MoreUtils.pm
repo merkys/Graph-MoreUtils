@@ -35,7 +35,7 @@ use Graph::MoreUtils::Smooth;
 our @EXPORT_OK = qw(
     SSSR
     canonical_order
-    equitable_partitions
+    equitable_partition
     graph_replace
     line
     smooth
@@ -58,17 +58,17 @@ sub SSSR { &Graph::MoreUtils::SSSR::SSSR }
 
 sub canonical_order { &Graph::MoreUtils::Isomorphism::canonical_order }
 
-=head2 C<equitable_partitions( $graph, $color_sub )>
+=head2 C<equitable_partition( $graph, $color_sub )>
 
 Partitions the graph vertices into equivalence classes (returns an array of arrays).
 Accepts colored vertices by stringifying them using Perl C<""> operator.
 If different behavior is needed, a custom anonymous subroutine can be passed as the second parameter:
 
-    print equitable_partitions( $G, sub { length $_[0] } );
+    print equitable_partition( $G, sub { length $_[0] } );
 
 =cut
 
-sub equitable_partitions { &Graph::MoreUtils::Isomorphism::equitable_partitions }
+sub equitable_partition { &Graph::MoreUtils::Isomorphism::equitable_partition }
 
 =head2 C<graph_replace( $graph, $new, @old )>
 
