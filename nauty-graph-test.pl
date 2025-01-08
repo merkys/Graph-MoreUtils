@@ -72,7 +72,6 @@ sub individualise_dfs
         print "TRIMMED\n" unless $orbit_set->size;
 
         for (sort @$orbit_set) {
-            # TODO: No need to individualise vertex if any of its automorphisms were already checked
             print ' ' x $level, ">>>> individualise $_\n";
             my %colors = individualise( %colors, $_ );
             my @orbits = equitable_partition( $graph, sub { $colors{$_[0]} } );
