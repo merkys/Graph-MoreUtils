@@ -11,6 +11,8 @@ use Set::Object qw( set );
 
 $Data::Dumper::Sortkeys = 1;
 
+my $debug = '';
+
 sub individualise
 {
     my $vertex = pop;
@@ -68,15 +70,15 @@ sub individualise_dfs
             next unless $orbit_set->has( $_ );
             $orbit_set->remove( $automorphisms->neighbours( $_ ) );
         }
-        print "TRIMMED\n" unless $orbit_set->size;
+        print "TRIMMED\n" if $debug && !$orbit_set->size;
 
         for (sort @$orbit_set) {
-            print ' ' x $level, ">>>> individualise $_\n";
+            print ' ' x $level, ">>>> individualise $_\n" if $debug;
             my %colors = individualise( %colors, $_ );
             my @orbits = equitable_partition( $graph, sub { $colors{$_[0]} } );
             if( @orbits == $graph->vertices ) {
                 push @automorphisms, \@orbits;
-                print ' ' x ($level+2), "END\n";
+                print ' ' x ($level+2), "END\n" if $debug;
             } else {
                 individualise_dfs( $graph, $level + 2, $automorphisms, @orbits );
             }
@@ -91,7 +93,7 @@ sub individualise_dfs
                                               $automorphisms[$j]->[$k][0] );
                 }
             }
-        } print ' ' x $level, sprint_components( $automorphisms ), "\n" if @automorphisms;
+        } print ' ' x $level, sprint_components( $automorphisms ), "\n" if @automorphisms && $debug;
     }
 }
 
