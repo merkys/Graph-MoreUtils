@@ -67,7 +67,7 @@ sub canonical_order
 {
     my( $graph, $color_sub ) = @_;
 
-    my @orbits = map { set( @$_ ) } orbits( $graph, $color_sub );
+    my @orbits = map { set( @$_ ) } equitable_partitions( $graph, $color_sub );
 
     my $next_root = sub {
                             my( undef, $candidates ) = @_;
@@ -97,7 +97,7 @@ sub canonical_order
     return reverse Graph::Traversal::DFS->new( $graph, %$operations )->dfs;
 }
 
-sub orbits
+sub equitable_partitions
 {
     my( $graph, $color_sub ) = @_;
 

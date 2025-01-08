@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Graph::MoreUtils qw( orbits );
+use Graph::MoreUtils qw( equitable_partitions );
 use Graph::Undirected;
 use Test::More tests => 1;
 
@@ -23,5 +23,5 @@ for ($g->vertices) {
 }
 $colors{'1'} = 0;
 
-my( $orbit ) = orbits( $g, sub { $colors{$_[0]} } );
+my( $orbit ) = equitable_partitions( $g, sub { $colors{$_[0]} } );
 is @$orbit, 1;

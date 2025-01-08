@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Graph::MoreUtils qw( orbits );
+use Graph::MoreUtils qw( equitable_partitions );
 use Graph::Undirected;
 use Test::More;
 
@@ -47,5 +47,5 @@ $g8->add_path( 4, 1, 5, 3 );
 
 my @graphs = ( $g1, $g2, $g3, $g4, $g5, $g6, $g7, $g8 );
 for (@graphs) {
-    is scalar orbits( $_, sub { '' } ), 6;
+    is scalar equitable_partitions( $_, sub { '' } ), 6;
 }
