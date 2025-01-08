@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Data::Dumper;
-use Graph::MoreUtils qw( orbits );
+use Graph::MoreUtils qw( equitable_partition );
 use Graph::Undirected;
 use List::Util qw( first uniq );
 use Set::Object qw( set );
@@ -75,7 +75,7 @@ sub individualise_dfs
             # TODO: No need to individualise vertex if any of its automorphisms were already checked
             print ' ' x $level, ">>>> individualise $_\n";
             my %colors = individualise( %colors, $_ );
-            my @orbits = orbits( $graph, sub { $colors{$_[0]} } );
+            my @orbits = equitable_partition( $graph, sub { $colors{$_[0]} } );
             if( @orbits == $graph->vertices ) {
                 push @automorphisms, \@orbits;
                 print ' ' x ($level+2), "END\n";
@@ -137,6 +137,6 @@ for ($g3->vertices) {
     $g3_colors{$_} = 0;
 }
 
-my @orbits = orbits( $g1, sub { $g1_colors{$_[0]} } );
+my @orbits = equitable_partition( $g1, sub { $g1_colors{$_[0]} } );
 individualise_dfs( $g1, 0, @orbits );
 print Dumper [ $automorphisms->connected_components ];
