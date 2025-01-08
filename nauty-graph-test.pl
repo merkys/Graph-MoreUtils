@@ -39,13 +39,13 @@ my $automorphisms = Graph::Undirected->new( multiedged => 0 );
 sub individualise_dfs
 {
     my $graph = shift;
-    my %colors = @_;
+    my @orbits = @_;
 
-    my @orbit;
-    for my $color (sort( uniq( values %colors ) )) {
-        @orbit = grep { $colors{$_} == $color } keys %colors;
-        last if @orbit > 1;
-    } print "@orbit\n";
+    my $orbit = first { @$_ > 1 } @orbits;
+    return unless $orbit;
+
+    my @orbit = @$orbit;
+    my %colors = color_by_orbits( @orbits );
 
     my @partitions;
     my @automorphisms;
@@ -55,7 +55,7 @@ sub individualise_dfs
         if( @orbits == $graph->vertices ) {
             push @automorphisms, \@orbits;
         } else {
-            individualise_dfs( $graph, color_by_orbits( @orbits ) );
+            individualise_dfs( $graph, @orbits );
         }
     }
 
@@ -89,7 +89,5 @@ for ($g->vertices) {
 }
 
 my @orbits = orbits( $g, sub { $colors{$_[0]} } );
-%colors = color_by_orbits( @orbits );
-
-individualise_dfs( $g, %colors );
+individualise_dfs( $g, @orbits );
 # print Dumper [ $automorphisms->connected_components ];
