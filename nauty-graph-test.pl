@@ -41,34 +41,36 @@ sub individualise_dfs
     my $graph = shift;
     my @orbits = @_;
 
-    my $orbit = first { @$_ > 1 } @orbits;
-    return unless $orbit;
-
-    my @orbit = @$orbit;
     my %colors = color_by_orbits( @orbits );
 
-    my @partitions;
-    my @automorphisms;
-    for (sort @orbit) { print ">>>> individualise $_\n";
-        my %colors = individualise( %colors, $_ );
-        my @orbits = orbits( $graph, sub { $colors{$_[0]} } );
-        if( @orbits == $graph->vertices ) {
-            push @automorphisms, \@orbits;
-        } else {
-            individualise_dfs( $graph, @orbits );
-        }
-    }
+    for my $orbit (@orbits) {
+        next unless @$orbit > 1;
 
-    for my $i (0..$#automorphisms) {
-        for my $j (0..$#automorphisms) {
-            next if $i == $j;
-            for my $k (0..scalar( $graph->vertices ) - 1) {
-                next if $automorphisms[$i]->[$k][0] == $automorphisms[$j]->[$k][0];
-                $automorphisms->add_edge( $automorphisms[$i]->[$k][0],
-                                          $automorphisms[$j]->[$k][0] );
+        my @orbit = @$orbit;
+
+        my @partitions;
+        my @automorphisms;
+        for (sort @orbit) { print ">>>> individualise $_\n";
+            my %colors = individualise( %colors, $_ );
+            my @orbits = orbits( $graph, sub { $colors{$_[0]} } );
+            if( @orbits == $graph->vertices ) {
+                push @automorphisms, \@orbits;
+            } else {
+                individualise_dfs( $graph, @orbits );
             }
         }
-    } print $automorphisms, "\n" if @automorphisms;
+
+        for my $i (0..$#automorphisms) {
+            for my $j (0..$#automorphisms) {
+                next if $i == $j;
+                for my $k (0..scalar( $graph->vertices ) - 1) {
+                    next if $automorphisms[$i]->[$k][0] == $automorphisms[$j]->[$k][0];
+                    $automorphisms->add_edge( $automorphisms[$i]->[$k][0],
+                                              $automorphisms[$j]->[$k][0] );
+                }
+            }
+        } print $automorphisms, "\n" if @automorphisms;
+    }
 }
 
 my $g = Graph::Undirected->new;
