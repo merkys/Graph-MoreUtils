@@ -25,7 +25,9 @@ sub cmp_frequency_tables
     return     scalar( keys %$B ) <=> scalar( keys %$A )
         unless scalar( keys %$A ) &&  scalar( keys %$B );
 
-    my $keys = set( keys %$A, keys %$B );
+    return $A->{self} <=> $B->{self} unless $A->{self} == $B->{self};
+
+    my $keys = set( keys %$A, keys %$B ) - 'self';
     for (sort { $a <=> $b } @$keys) {
         return     exists $B->{$_} <=> exists $A->{$_}
             unless exists $B->{$_} &&  exists $A->{$_};
@@ -110,6 +112,7 @@ sub orbits
         my %colors_now;
         for my $vertex ($graph->vertices) {
             $colors_now{$vertex} = frequency_table( map { $colors{$_} } $graph->neighbours( $vertex ) );
+            $colors_now{$vertex}->{self} = $colors{$vertex};
         }
         %colors_now = rename_colors( %colors_now );
         last if uniq( values %colors ) == uniq( values %colors_now );
