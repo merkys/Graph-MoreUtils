@@ -123,7 +123,7 @@ sub orbits
         push @orbits, [ grep { $colors{$_} eq $colors{$vertex} } @init_order ];
         $seen->insert( @{$orbits[-1]} );
     }
-    return @orbits;
+    return map { [ sort @$_ ] } @orbits;
 }
 
 1;
