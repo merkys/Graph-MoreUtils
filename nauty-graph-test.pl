@@ -44,12 +44,11 @@ sub sprint_components
     return '[ ' . join( ' | ', map { "@$_" } @components ) . ' ]';
 }
 
-my $automorphisms = Graph::Undirected->new( multiedged => 0 );
-
 sub individualise_dfs
 {
     my $graph = shift;
     my $level = shift;
+    my $automorphisms = shift;
     my @orbits = @_;
 
     my %colors = color_by_orbits( @orbits );
@@ -79,7 +78,7 @@ sub individualise_dfs
                 push @automorphisms, \@orbits;
                 print ' ' x ($level+2), "END\n";
             } else {
-                individualise_dfs( $graph, $level + 2, @orbits );
+                individualise_dfs( $graph, $level + 2, $automorphisms, @orbits );
             }
         }
 
@@ -94,6 +93,14 @@ sub individualise_dfs
             }
         } print ' ' x $level, sprint_components( $automorphisms ), "\n" if @automorphisms;
     }
+}
+
+sub orbits
+{
+    my( $graph, $color_sub ) = @_;
+    my $automorphisms = Graph::Undirected->new( multiedged => 0 );
+    individualise_dfs( $graph, 0, $automorphisms, equitable_partition( $graph, $color_sub ) );
+    print Dumper [ $automorphisms->connected_components ];
 }
 
 # Graph from "Node invariants and pruning"
@@ -136,6 +143,4 @@ for ($g3->vertices) {
     $g3_colors{$_} = 0;
 }
 
-my @orbits = equitable_partition( $g1, sub { $g1_colors{$_[0]} } );
-individualise_dfs( $g1, 0, @orbits );
-print Dumper [ $automorphisms->connected_components ];
+orbits( $g1, sub { $g1_colors{$_[0]} } );
