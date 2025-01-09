@@ -5,11 +5,11 @@ use warnings;
 
 use Graph::MoreUtils qw( equitable_partition orbits );
 use Graph::Undirected;
-use Test::More tests => 5 * 2;
-
-# Examples from https://pallini.di.uniroma1.it/Introduction.html
+use Test::More tests => 6 * 2;
 
 my $g;
+
+# Examples from https://pallini.di.uniroma1.it/Introduction.html
 
 # 8-vertex examples from "Refinement: equitable partition"
 
@@ -50,3 +50,15 @@ is scalar equitable_partition( $g, sub { '' } ), 3;
 is scalar equitable_partition( $g, sub { $_[0] < 3 } ), 3;
 is scalar orbits( $g, sub { '' } ), 5;
 is scalar orbits( $g, sub { $_[0] < 3 } ), 5;
+
+# Example from https://pallini.di.uniroma1.it/SearchTree.html
+
+$g = Graph::Undirected->new;
+$g->add_cycle( 0..4 );
+$g->add_cycle( 5, 7, 9, 6, 8 );
+for (0..4) {
+    $g->add_edge( $_, 5 + $_ );
+}
+
+is scalar equitable_partition( $g, sub { '' } ), 1;
+is scalar orbits( $g, sub { '' } ), 1;
