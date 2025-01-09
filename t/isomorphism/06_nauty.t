@@ -3,9 +3,9 @@
 use strict;
 use warnings;
 
-use Graph::MoreUtils qw( equitable_partition );
+use Graph::MoreUtils qw( equitable_partition orbits );
 use Graph::Undirected;
-use Test::More tests => 1;
+use Test::More tests => 2;
 
 # Graph from https://pallini.di.uniroma1.it/Introduction.html "Node invariants and pruning"
 
@@ -17,11 +17,10 @@ $g->add_path( 3, 4, 5 );
 
 my %colors;
 for ($g->vertices) {
-    $colors{$_} = 1 if $g->degree( $_ ) == 5;
-    $colors{$_} = 2 if $g->degree( $_ ) == 2;
-    $colors{$_} = 3 if $g->degree( $_ ) == 4;
+    $colors{$_} = 0 if $g->degree( $_ ) == 5;
+    $colors{$_} = 1 if $g->degree( $_ ) == 2;
+    $colors{$_} = 2 if $g->degree( $_ ) == 4;
 }
-$colors{'1'} = 0;
 
-my( $orbit ) = equitable_partition( $g, sub { $colors{$_[0]} } );
-is @$orbit, 1;
+is scalar equitable_partition( $g, sub { $colors{$_[0]} } ), 3;
+is scalar orbits( $g, sub { $colors{$_[0]} } ), 3;
