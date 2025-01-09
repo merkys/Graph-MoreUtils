@@ -6,6 +6,7 @@ package Graph::MoreUtils::Isomorphism;
 use strict;
 use warnings;
 
+use Graph::MoreUtils::Isomorphism::Automorphism;
 use Graph::Traversal::DFS;
 use List::Util qw( all uniq );
 use Set::Object qw( set );
@@ -190,9 +191,8 @@ sub individualise_dfs
         # Only look into non-automorphic vertices
         my $orbit_set = set( @orbit );
         for (sort @orbit) {
-            next unless $automorphisms->has_vertex( $_ );
             next unless $orbit_set->has( $_ );
-            $orbit_set->remove( $automorphisms->neighbours( $_ ) );
+            $orbit_set->remove( $automorphisms->automorphisms( $_ ) );
         }
         print "TRIMMED\n" if $debug && !$orbit_set->size;
 
@@ -202,41 +202,21 @@ sub individualise_dfs
             my @orbits = equitable_partition( $graph, sub { $colors{$_[0]} } );
             print sprint_orbits( @orbits ), "\n" if $debug;
             if( @orbits == $graph->vertices ) {
-                push @automorphisms, \@orbits;
+                $automorphisms->add_partition( map { @$_ } @orbits );
                 print ' ' x ($level+2), "END\n" if $debug;
             } else {
                 individualise_dfs( $graph, $level + 2, $automorphisms, @orbits );
             }
         }
-
-        for my $i (0..$#automorphisms) {
-            for my $j (0..$#automorphisms) {
-                next if $i == $j;
-                for my $k (0..scalar( $graph->vertices ) - 1) {
-                    next if $automorphisms[$i]->[$k][0] == $automorphisms[$j]->[$k][0];
-                    $automorphisms->add_edge( $automorphisms[$i]->[$k][0],
-                                              $automorphisms[$j]->[$k][0] );
-                }
-            }
-        } print ' ' x $level, sprint_components( $automorphisms ), "\n" if @automorphisms && $debug;
     }
 }
 
 sub orbits
 {
     my( $graph, $color_sub ) = @_;
-    my $automorphisms = Graph::Undirected->new( multiedged => 0 );
-    individualise_dfs( $graph, 0, $automorphisms, equitable_partition( $graph, $color_sub ) );
-
-    for ($graph->vertices) {
-        next if $automorphisms->has_vertex( $_ );
-        $automorphisms->add_vertex( $_ );
-    }
-
-    my @components = sort { $a->[0] <=> $b->[0] }
-                     map  { [ sort @$_ ] }
-                          $automorphisms->connected_components;
-    return @components;
+    my $automorphism = Graph::MoreUtils::Isomorphism::Automorphism->new( $graph->vertices );
+    individualise_dfs( $graph, 0, $automorphism, equitable_partition( $graph, $color_sub ) );
+    return $automorphism->orbits;
 }
 
 1;
