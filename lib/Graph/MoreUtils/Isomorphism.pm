@@ -164,6 +164,12 @@ sub sprint_components
     return '[ ' . join( ' | ', map { "@$_" } @components ) . ' ]';
 }
 
+sub sprint_orbits
+{
+    my @orbits = @_;
+    return '[ ' . join( ' | ', map { "@$_" } @orbits ) . ' ]';
+}
+
 sub individualise_dfs
 {
     my $graph = shift;
@@ -191,9 +197,10 @@ sub individualise_dfs
         print "TRIMMED\n" if $debug && !$orbit_set->size;
 
         for (sort @$orbit_set) {
-            print ' ' x $level, ">>>> individualise $_\n" if $debug;
+            print ' ' x $level, ">>>> individualise $_ : " if $debug;
             my %colors = individualise( %colors, $_ );
             my @orbits = equitable_partition( $graph, sub { $colors{$_[0]} } );
+            print sprint_orbits( @orbits ), "\n" if $debug;
             if( @orbits == $graph->vertices ) {
                 push @automorphisms, \@orbits;
                 print ' ' x ($level+2), "END\n" if $debug;
