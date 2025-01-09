@@ -226,9 +226,10 @@ sub orbits
         $automorphisms->add_vertex( $_ );
     }
 
-    my @components = $automorphisms->connected_components;
-    @components = map { [ sort @$_ ] } @components;
-    return sort { $a->[0] <=> $b->[0] } @components;
+    my @components = sort { $a->[0] <=> $b->[0] }
+                     map  { [ sort @$_ ] }
+                          $automorphisms->connected_components;
+    return @components;
 }
 
 1;

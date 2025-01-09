@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Graph::MoreUtils qw( equitable_partition );
+use Graph::MoreUtils qw( equitable_partition orbits );
 use Graph::Undirected;
 use Test::More;
 
@@ -11,7 +11,7 @@ use Test::More;
 # From https://en.wikipedia.org/w/index.php?title=Asymmetric_graph&oldid=1251673484
 # All graphs enumerated in https://commons.wikimedia.org/w/index.php?title=File:Asym-graph.PNG&oldid=805788206
 
-plan tests => 8;
+plan tests => 8 * 2;
 
 my $g1 = Graph::Undirected->new;
 $g1->add_path( 1..6 );
@@ -48,4 +48,5 @@ $g8->add_path( 4, 1, 5, 3 );
 my @graphs = ( $g1, $g2, $g3, $g4, $g5, $g6, $g7, $g8 );
 for (@graphs) {
     is scalar equitable_partition( $_, sub { '' } ), 6;
+    is scalar orbits( $_, sub { '' } ), 6;
 }

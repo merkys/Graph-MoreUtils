@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Data::Dumper;
-use Graph::MoreUtils qw( equitable_partition );
+use Graph::MoreUtils qw( equitable_partition orbits );
 use Graph::Undirected;
 
 # Graph from "Node invariants and pruning"
@@ -47,4 +47,4 @@ for ($g3->vertices) {
     $g3_colors{$_} = 0;
 }
 
-print Dumper [ Graph::MoreUtils::Isomorphism::orbits( $g2, sub { $g2_colors{$_[0]} } ) ];
+print Dumper [ orbits( $g2, sub { $g2_colors{$_[0]} } ) ];
