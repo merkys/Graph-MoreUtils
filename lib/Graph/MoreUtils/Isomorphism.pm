@@ -10,7 +10,7 @@ use Graph::Traversal::DFS;
 use List::Util qw( all uniq );
 use Set::Object qw( set );
 
-my $debug = '';
+our $debug = '';
 
 sub frequency_table
 {
