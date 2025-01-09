@@ -38,6 +38,7 @@ our @EXPORT_OK = qw(
     equitable_partition
     graph_replace
     line
+    orbits
     smooth
 );
 
@@ -94,6 +95,8 @@ This does not work with directed graphs yet.
 =cut
 
 sub line { &Graph::MoreUtils::Line::line }
+
+sub orbits { &Graph::MoreUtils::Isomorphism::orbits }
 
 =head2 C<smooth( $graph )>
 
