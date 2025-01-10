@@ -8,7 +8,7 @@ use warnings;
 
 use Graph::MoreUtils::Isomorphism::Automorphism;
 use Graph::Traversal::DFS;
-use List::Util qw( all uniq );
+use List::Util qw( all first uniq );
 use Set::Object qw( set );
 
 our $debug = '';
@@ -178,35 +178,31 @@ sub individualise_dfs
     my $automorphisms = shift;
     my @orbits = @_;
 
+    my $orbit = first { @$_ > 1 } @orbits;
+    return unless $orbit;
+
     my %colors = color_by_orbits( @orbits );
 
-    for my $orbit (@orbits) {
-        next unless @$orbit > 1;
+    my @orbit = @$orbit;
 
-        my @orbit = @$orbit;
+    # Only look into non-automorphic vertices
+    my $orbit_set = set( @orbit );
+    for (sort @orbit) {
+        next unless $orbit_set->has( $_ );
+        # $orbit_set->remove( $automorphisms->automorphisms( $_ ) );
+    }
+    print "TRIMMED\n" if $debug && !$orbit_set->size;
 
-        my @partitions;
-        my @automorphisms;
-
-        # Only look into non-automorphic vertices
-        my $orbit_set = set( @orbit );
-        for (sort @orbit) {
-            next unless $orbit_set->has( $_ );
-            $orbit_set->remove( $automorphisms->automorphisms( $_ ) );
-        }
-        print "TRIMMED\n" if $debug && !$orbit_set->size;
-
-        for (sort @$orbit_set) {
-            print ' ' x $level, ">>>> individualise $_ : " if $debug;
-            my %colors = individualise( %colors, $_ );
-            my @orbits = equitable_partition( $graph, sub { $colors{$_[0]} } );
-            print sprint_orbits( @orbits ), "\n" if $debug;
-            if( @orbits == $graph->vertices ) {
-                $automorphisms->add_partition( map { @$_ } @orbits );
-                print ' ' x ($level+2), "END\n" if $debug;
-            } else {
-                individualise_dfs( $graph, $level + 2, $automorphisms, @orbits );
-            }
+    for (sort @$orbit_set) {
+        print ' ' x $level, ">>>> individualise $_ : " if $debug;
+        my %colors = individualise( %colors, $_ );
+        my @orbits = equitable_partition( $graph, sub { $colors{$_[0]} } );
+        print sprint_orbits( @orbits ), "\n" if $debug;
+        if( @orbits == $graph->vertices ) {
+            $automorphisms->add_partition( map { @$_ } @orbits );
+            print ' ' x ($level+2), "END\n" if $debug;
+        } else {
+            individualise_dfs( $graph, $level + 2, $automorphisms, @orbits );
         }
     }
 }
