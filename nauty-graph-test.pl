@@ -34,11 +34,25 @@ sub refine
     my $affected_vertices = set( map { $graph->neighbours( $_ ) } $cells[$cell+1]->members ) -
                             set( map { $_->members } @cells[0..$cell+1] );
     my @affected_cells = grep { $_->size > 1 } grep { !$_->is_disjoint( $affected_vertices ) } @cells;
-    for my $affected_cell (@affected_cells) {
-        for my $vertex (@$affected_cell) {
-            print set( $graph->neighbours( $vertex ) ) * $cells[$cell+1];
+    my @cells_now = @cells[0..$cell+1];
+
+    for my  $affected_cell (@cells[$cell+2..$#cells]) {
+        if( $affected_cell->size == 1 ) {
+            push @cells_now, $affected_cell;
+            next;
         }
+
+        my @neighbours_per_vertex;
+        for my $vertex (@$affected_cell) {
+            my $neighbours = (set( $graph->neighbours( $vertex ) ) * $cells[$cell+1])->size;
+            $neighbours_per_vertex[$neighbours] = [] unless $neighbours_per_vertex[$neighbours];
+            push @{$neighbours_per_vertex[$neighbours]}, $vertex;
+        }
+
+        push @cells_now, map { set( @$_ ) } reverse grep { $_ } @neighbours_per_vertex;
     }
+
+    print "@cells_now";
 }
 
 # print Dumper [ orbits( $g, sub { '' } ) ];
